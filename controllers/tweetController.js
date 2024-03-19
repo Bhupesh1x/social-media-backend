@@ -28,4 +28,32 @@ const createTweet = async (req, res) => {
   }
 };
 
-export { createTweet };
+const deleteTweet = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const tweet = await Tweet.deleteOne({
+      $and: [{ _id: id }, { userId: req.user }],
+    });
+
+    if (!tweet?.deletedCount) {
+      return res.status(500).json({
+        message: "It is not authorized for you to remove this tweet.",
+        success: false,
+      });
+    }
+
+    res.json({
+      message: "Tweet deleted successfully",
+      success: true,
+    });
+  } catch (error) {
+    console.log("deleteTweet error", error);
+    return res.status(500).json({
+      message: "Something went wrong",
+      success: false,
+    });
+  }
+};
+
+export { createTweet, deleteTweet };
