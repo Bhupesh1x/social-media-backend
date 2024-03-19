@@ -43,4 +43,45 @@ const register = async (req, res) => {
   }
 };
 
-export { register };
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const isUserExists = await User.findOne({ email });
+
+    if (!isUserExists) {
+      return res
+        .status(401)
+        .json({ message: "Invalid credentials", success: false });
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(
+      password,
+      isUserExists.password
+    );
+
+    if (!isPasswordCorrect) {
+      return res
+        .status(401)
+        .json({ message: "Invalid credentials", success: false });
+    }
+
+    const token = jwt.sign(
+      { userId: isUserExists?._id },
+      process.env.TOKEN_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.cookie("social-app-token", token, { expiresIn: "1d" }).json({
+      message: `Welcome back ${isUserExists.name}`,
+      success: true,
+    });
+  } catch (error) {
+    console.log("login error", error);
+    return res
+      .status(500)
+      .json({ message: "Something went wrong", success: false });
+  }
+};
+
+export { login, register };
