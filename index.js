@@ -7,6 +7,7 @@ import "dotenv/config";
 import connectToDb from "./config/db.js";
 
 import userRoute from "./routes/userRoutes.js";
+import tweetRoute from "./routes/tweetRoutes.js";
 
 const PORT = process.env.PORT;
 
@@ -26,6 +27,7 @@ app.use(cookieParser());
 
 // api routes
 app.use("/api/user", userRoute);
+app.use("/api/tweet", tweetRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
