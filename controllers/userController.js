@@ -93,4 +93,26 @@ const logout = (req, res) => {
     });
 };
 
-export { login, logout, register };
+const getUserProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "User not found", success: false });
+    }
+
+    user.password = undefined;
+    return res.json(user);
+  } catch (error) {
+    console.log("getUserProfile error", error);
+    return res
+      .status(500)
+      .json({ message: "Something went wrong", success: false });
+  }
+};
+
+export { login, logout, register, getUserProfile };
