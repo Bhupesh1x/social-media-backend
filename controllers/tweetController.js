@@ -149,4 +149,34 @@ const getAllTweets = async (req, res) => {
   }
 };
 
-export { createTweet, deleteTweet, likeOrDislike, addComment, getAllTweets };
+const getTweetById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const tweet = await Tweet.findById(id).populate("userId comments.userId");
+
+    if (!tweet) {
+      return res.status(400).json({
+        message: "Tweet not found with the particular id",
+        success: false,
+      });
+    }
+
+    return res.json(tweet);
+  } catch (error) {
+    console.log("error", error);
+    return res.status(500).json({
+      message: "Something went wrong",
+      success: false,
+    });
+  }
+};
+
+export {
+  createTweet,
+  deleteTweet,
+  likeOrDislike,
+  addComment,
+  getAllTweets,
+  getTweetById,
+};
