@@ -4,6 +4,7 @@ import {
   login,
   logout,
   register,
+  getOtherUsers,
   getUserProfile,
 } from "../controllers/userController.js";
 
@@ -15,5 +16,6 @@ router.post("/register", register);
 router.post("/login", login);
 router.get("/logout", logout);
 router.get("/userProfile/:id", isAuthenticated, getUserProfile);
+router.get("/otherUsers", isAuthenticated, getOtherUsers);
 
 export default router;

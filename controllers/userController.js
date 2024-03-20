@@ -115,4 +115,29 @@ const getUserProfile = async (req, res) => {
   }
 };
 
-export { login, logout, register, getUserProfile };
+const getOtherUsers = async (req, res) => {
+  try {
+    const userId = req.user;
+
+    const otherUsers = await User.find({ _id: { $ne: userId } })
+      .limit(5)
+      .select("-password");
+
+    if (!otherUsers) {
+      return res.status(400).json({
+        message: "No users found",
+        success: false,
+      });
+    }
+
+    return res.json(otherUsers);
+  } catch (error) {
+    console.log("first", error);
+    return res.status(500).json({
+      message: "Something went wrong",
+      success: false,
+    });
+  }
+};
+
+export { login, logout, register, getUserProfile, getOtherUsers };
