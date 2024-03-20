@@ -56,4 +56,40 @@ const deleteTweet = async (req, res) => {
   }
 };
 
-export { createTweet, deleteTweet };
+const likeOrDislike = async (req, res) => {
+  try {
+    const userId = req.user;
+    const { id } = req.params;
+
+    const tweet = await Tweet.findById(id);
+
+    if (!tweet) {
+      return res.status(400).send({
+        message: "Invalid tweet id",
+        success: false,
+      });
+    }
+
+    if (tweet.likes.includes(userId)) {
+      await Tweet.findByIdAndUpdate(id, { $pull: { likes: userId } });
+      return res.send({
+        message: "Tweet disliked successfully",
+        success: true,
+      });
+    } else {
+      await Tweet.findByIdAndUpdate(id, { $push: { likes: userId } });
+      return res.send({
+        message: "Tweet liked successfully",
+        success: true,
+      });
+    }
+  } catch (error) {
+    console.log("likeOrDislike error", error);
+    return res.status(500).send({
+      message: "Something went wrong",
+      success: false,
+    });
+  }
+};
+
+export { createTweet, deleteTweet, likeOrDislike };
