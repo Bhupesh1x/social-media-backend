@@ -6,6 +6,7 @@ import {
   register,
   getOtherUsers,
   getUserProfile,
+  followOrUnfollow,
 } from "../controllers/userController.js";
 
 import { isAuthenticated } from "../middlewares/auth.js";
@@ -17,5 +18,6 @@ router.post("/login", login);
 router.get("/logout", logout);
 router.get("/userProfile/:id", isAuthenticated, getUserProfile);
 router.get("/otherUsers", isAuthenticated, getOtherUsers);
+router.put("/followOrUnfollow/:id", isAuthenticated, followOrUnfollow);
 
 export default router;

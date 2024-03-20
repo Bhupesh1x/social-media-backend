@@ -140,4 +140,47 @@ const getOtherUsers = async (req, res) => {
   }
 };
 
-export { login, logout, register, getUserProfile, getOtherUsers };
+const followOrUnfollow = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(500).json({
+        message: "Something went wrong",
+        success: false,
+      });
+    }
+
+    if (user.following.includes(id)) {
+      await User.findByIdAndUpdate(id, { $pull: { followers: userId } });
+      await User.findByIdAndUpdate(userId, { $pull: { following: id } });
+      return res.json({
+        message: "User Unfollowed successfully",
+      });
+    } else {
+      await User.findByIdAndUpdate(id, { $push: { followers: userId } });
+      await User.findByIdAndUpdate(userId, { $push: { following: id } });
+      return res.json({
+        message: "User followed successfully",
+      });
+    }
+  } catch (error) {
+    console.log("followOrUnfollow error", error);
+    return res.status(500).json({
+      message: "Something went wrong",
+      success: false,
+    });
+  }
+};
+
+export {
+  login,
+  logout,
+  register,
+  getUserProfile,
+  getOtherUsers,
+  followOrUnfollow,
+};
