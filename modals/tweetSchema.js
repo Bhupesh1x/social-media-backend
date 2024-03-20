@@ -17,8 +17,16 @@ const tweetSchema = mongoose.Schema(
       type: Array,
       default: [],
     },
-    bookmarks: {
-      type: Array,
+    comments: {
+      type: [
+        {
+          userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+          },
+          comment: String,
+        },
+      ],
       default: [],
     },
   },

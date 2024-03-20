@@ -92,4 +92,34 @@ const likeOrDislike = async (req, res) => {
   }
 };
 
-export { createTweet, deleteTweet, likeOrDislike };
+const addComment = async (req, res) => {
+  try {
+    const { tweetId, comment } = req.body;
+    const userId = req.user;
+
+    const tweet = await Tweet.findByIdAndUpdate(
+      tweetId,
+      {
+        $push: { comments: { userId, comment } },
+      },
+      { new: true }
+    );
+
+    if (!tweet) {
+      return res.status(400).send({
+        message: "Invalid tweet id",
+        success: false,
+      });
+    }
+
+    return res.json(tweet);
+  } catch (error) {
+    console.log("addComment error", error);
+    return res.status(500).send({
+      message: "Something went wrong",
+      success: false,
+    });
+  }
+};
+
+export { createTweet, deleteTweet, likeOrDislike, addComment };
