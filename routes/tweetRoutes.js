@@ -6,6 +6,7 @@ import {
   addComment,
   createTweet,
   deleteTweet,
+  getAllTweets,
   likeOrDislike,
 } from "../controllers/tweetController.js";
 
@@ -15,5 +16,6 @@ router.post("/create", isAuthenticated, createTweet);
 router.delete("/delete/:id", isAuthenticated, deleteTweet);
 router.put("/likeordislike/:id", isAuthenticated, likeOrDislike);
 router.post("/addComment", isAuthenticated, addComment);
+router.get("/getAllTweets", isAuthenticated, getAllTweets);
 
 export default router;

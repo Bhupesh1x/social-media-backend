@@ -1,3 +1,4 @@
+import User from "../modals/userModal.js";
 import Tweet from "../modals/tweetSchema.js";
 
 const createTweet = async (req, res) => {
@@ -122,4 +123,30 @@ const addComment = async (req, res) => {
   }
 };
 
-export { createTweet, deleteTweet, likeOrDislike, addComment };
+const getAllTweets = async (req, res) => {
+  try {
+    const userId = req.user;
+
+    const user = await User.findById(userId);
+
+    const userTweets = await Tweet.find({ userId }).populate("userId");
+
+    const followingTweets = await Promise.all(
+      user.following.map((userId) => {
+        return Tweet.find({ userId }).populate("userId");
+      })
+    );
+
+    const allTweets = userTweets.concat(...followingTweets);
+
+    return res.json(allTweets);
+  } catch (error) {
+    console.log("getAllTweets error", error);
+    return res.status(500).json({
+      message: "Something went wrong",
+      success: 500,
+    });
+  }
+};
+
+export { createTweet, deleteTweet, likeOrDislike, addComment, getAllTweets };
